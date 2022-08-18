@@ -1,0 +1,25 @@
+Html starting from layout in viws
+all server info is in bin/www
+public folder contains js, images and stylesheet
+routes folder contains routing js files
+when create new routes pass path in app.js
+
+
+
+doubt -
+While making changes to express have to restart to reflect changes
+
+
+
+DB connect error with new version
+
+1. CRUD operations for user and product controllers
+2. created auth.config.js which contains secret key.
+3. verify a Signup action - uniq email and username (middleware/ verifysignup)
+4. auth controller - sign up with next - checkDuplicateUsernameOrEmail, signin (with jwt token), signout
+(already used user name and email via middleware)
+5. auth routes  
+6. home - made two method 1. public, speicif user
+JWT
+
+issue => bcrypt.compareSync is giving false for same string
