@@ -1,75 +1,62 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
-
-var userSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  username: {
-    type: String
-  },
-  password: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 5,
-    validate(value) {
-      if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
-        throw new Error('Password must contain at least one letter and one number');
-      }
-    },
-    private: true,
-  },
-  address: {
-    street: {
-      type: String
-    },
-    suite: {
-      type: String
-    },
-    city: {
-      type: String
-    },
-    zipcode: {
-      type: String
-    },
-    geo: {
-      lat: String,
-      lng: String
-    }
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    validate(value) {
-      if (!validator.isEmail(value)) {
-        throw new Error('Invalid email');
-      }
-    },
-  },
-  phone: {
-    type: String
-  },
-  website: {
-    type: String
-  },
-  company: {
+module.exports = (sequelize, Sequelize) => {
+  const User = sequelize.define("users", {
     name: {
-      type: String
+      type: Sequelize.STRING
     },
-    catchPhrase: {
-      type: String
+    username: {
+      type: Sequelize.STRING
     },
-    bs: {
-      type: String
-    }
+    password: {
+      type: Sequelize.STRING
+    },
+    email: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true
+    },
+    phone: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
+    Language: {
+      type: Sequelize.JSON
+    },
+    // createdAt: {
+    //   type: Sequelize.JSON
+    // },
+    // updatedAt: {
+    //   type: Sequelize.JSON
+    // }
+  },
+  {
+    timestamps: false
   }
-});
+  );
+
+  return User;
+};
 
 
-var User = mongoose.model('User', userSchema, 'users');
 
-module.exports = User;
+// const { Sequelize, Model, DataTypes } = require('sequelize');
+
+// const sequelize = new Sequelize('sqlite::memory:');
+// const User = sequelize.define('User', {
+//   name: {
+//     type: DataTypes.TEXT,
+//   },
+//   username: {
+//     type: DataTypes.TEXT
+//   },
+//   password: {
+//     type: DataTypes.TEXT,
+//   },
+//   email: {
+//     type: String,
+//   },
+//   phone: {
+//     type: DataTypes.TEXT
+//   }
+// });
+
+// module.exports = User;

@@ -1,44 +1,65 @@
 // const httpStatus = require('http-status');
-const User = require('../models/users.model');
-
+// const User = require('../models/users.model');
+const db = require("../models");
+const User = db.users;
+const {sequelize} = require('../models/index')
 
 const createUser = async (userBody) => {
-  return User.create(userBody);
+  console.log(userBody);
+  // return User.create(userBody);
+
+  const { name, username, password, email, phone, Language } = userBody;
+
+  try {
+    const user = await sequelize.transaction(async (t) => {
+      await User.create({
+        name: name,
+        username: username,
+        password: password,
+        email: email,
+        phone: phone,
+        Language: Language
+      }, { transaction: t });
+    });
+    return user;
+  } catch (error) {
+      console.log(error);
+      console.log('transaction aborted');
+  } 
 };
 
 const getUserById = async (id) => {
-  return User.findById(id);
+  return User.findByPk(id, { raw : true });
 };
 
+const findUser = (params) => {
+  return User.findOne({ where: params });
+}
+
 const usersList = async () => {
-  User.find().then((usersList) => {
+  User.findAll().then((usersList) => {
     return usersList;
   });
 };
 
 const updateUserById = async (uId, updateBody) => {
- getUserById(uId).then((user) => {
-    Object.assign(user, updateBody);
-    user.save().then(() => {
-        console.log(user + " is updated");
-        return user;
-    });
- });
+  User.update(updateBody, {where: { id: uId }})
 }
 
 const deleteUserById = (uId) => {
-  getUserById(uId).then((user) => {
-    user.remove().then(() => {
-      console.log(user + " is deleted");
-      return user;
-  });
-  });
+  User.destroy({where: { id: uId }})
 };
+
+const deleteAllUsers = () => {
+  User.destroy({where: {}});
+}
 
 module.exports = {
   createUser,
   getUserById,
   updateUserById,
   deleteUserById,
-  usersList
+  usersList,
+  findUser,
+  deleteAllUsers
 };

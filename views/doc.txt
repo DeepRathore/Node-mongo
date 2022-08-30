@@ -23,3 +23,25 @@ DB connect error with new version
 JWT
 
 issue => bcrypt.compareSync is giving false for same string
+
+
+added migration 
+added seeders and entered initial values for created migration 
+Manual validation in middleware to check datatypes of params
+
+
+Joi
+
+added a file validationschemas where all the joi schema will be defined 
+added function in the middleware to test schemas 
+
+
+products list and get all users list with axios
+Added all required crud with sequilize on user and product
+Created another express app on categores with operations 
+called categories into myapp productlist
+called products list into category app
+Transaction used at user creation method
+
+
+an issue on caliing get all api

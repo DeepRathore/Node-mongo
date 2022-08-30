@@ -1,16 +1,11 @@
-const mongoose = require('mongoose');
 const app = require('./app');
 var port = normalizePort('4200');
 
 let server;
-mongoose.connect('mongodb+srv://admin123:admin123@cluster0.p2prkvy.mongodb.net/test').then(() => {
-  console.log('Connected to MongoDB');
+app.set('port', port);
 
-  app.set('port', port);
-
-  server = app.listen(port, () => {
-    console.log(`Listening to port ${port}`);
-  });
+server = app.listen(port, () => {
+  console.log(`Listening to port ${port}`);
 });
 
 const exitHandler = () => {

@@ -2,7 +2,9 @@
 var resCodes = require('http-status-codes')
 const Order = require("../models/orders.model");
 const Product = require("../models/products.model")
-var productService = require('../services/products')
+var productService = require('../services/products');
+const axios = require("axios");
+const { func } = require('joi');
 
 exports.index = function(req, res){
     res.render('products');
@@ -22,10 +24,7 @@ exports.getProduct = function(req, res) {
 
 // http://localhost:4200/products?title="Apple Juice"&type=food&description="Containing juice"&price=70&rating=3.3
 exports.createProduct = function(req, res) {
-  if (!req.query.title) {
-    res.sendStatus(resCodes.StatusCodes.BAD_REQUEST);
-  }
-  productService.createProduct(req.query).then((product) => {
+  productService.createProduct(req.body).then((product) => {
     res.status(resCodes.StatusCodes.CREATED).send(product);
   });
 };
@@ -37,21 +36,16 @@ exports.deleteProduct = function(req, res) {
   });
 };
 
-// update
-exports.updateProduct = function(req, res) {
-  productService.updateProductById(req.params.id).then((product) => {
-    res.send(product);
+exports.deleteAllProducts = function(req, res) {
+  userService.deleteAllProducts().then(() => {
+    res.status(resCodes.StatusCodes.OK).send('All products deleted');
   });
 };
 
-// http://localhost:4200/products/list
-exports.getAllProduct = function(req, res) {
-  productService.productsList().then((productsList) => {
-      if (!productsList) {
-        res.send('Products list not found');
-      } else {
-        res.status(resCodes.StatusCodes.OK).send(productsList);
-      }
+// update
+exports.updateProduct = function(req, res) {
+  productService.updateProductById(req.params.id, req.body).then((product) => {
+    res.send(product);
   });
 };
 
@@ -92,3 +86,33 @@ exports.getDetails = function(req, res) {
   }
  });
 }
+
+
+// with axious
+http://localhost:4200/products/categories
+exports.getAllCategories = function(req, res) {
+  axios.get('http://localhost:4500/categories').then((response) => {
+    console.log(response.data)
+    res.status(resCodes.StatusCodes.OK).render('categories', { categories: response.data});
+  }).catch((response) => {
+    res.status(resCodes.StatusCodes.BAD_REQUEST).send(response);
+  })
+}
+
+
+// http://localhost:4200/products/list
+exports.getAllProduct = function(req, res) {
+  // productService.productsList().then((productsList) => {
+  //     if (!productsList) {
+  //       res.send('Products list not found');
+  //     } else {
+  //       res.status(resCodes.StatusCodes.OK).send(productsList);
+  //     }
+  // });
+
+  axios.get('https://fakestoreapi.com/products').then((response) => {
+    res.status(resCodes.StatusCodes.OK).send(response.data);
+  }).catch((response) => {
+    res.status(resCodes.StatusCodes.BAD_REQUEST).send(response);
+  })
+};

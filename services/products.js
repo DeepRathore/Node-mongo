@@ -1,5 +1,6 @@
 // const httpStatus = require('http-status');
-const Product = require('../models/products.model');
+const db = require("../models");
+const Product = db.products;
 
 
 const createProduct = async (productBody) => {
@@ -7,9 +8,12 @@ const createProduct = async (productBody) => {
 };
 
 const getProductById = async (id) => {
-  console.log(Product)
-  return Product.findById(id);
+  return Product.findByPk(id, { raw : true });
 };
+
+const findProduct = (params) => {
+  return Product.findOne({ where: params });
+}
 
 const productsList = async () => {
   Product.find().then((productsList) => {
@@ -17,29 +21,24 @@ const productsList = async () => {
   });
 };
 
-const updateProductById = async (pId, updateBody) => {
- getProductById(pId).then((product) => {
-    Object.assign(product, updateBody);
-    product.save().then(() => {
-        console.log(product + " is updated");
-        return product;
-    });
- });
+const updateProductById = async (uId, updateBody) => {
+  Product.update(updateBody, {where: { id: uId }})
 }
 
-const deleteProductById = (pId) => {
-  getProductById(pId).then((product) => {
-    product.remove().then(() => {
-      console.log(product + " is deleted");
-      return product;
-  });
-  });
+const deleteProductById = (uId) => {
+  Product.destroy({where: { id: uId }})
 };
+
+const deleteAllProducts = () => {
+  Product.destroy({where: {}});
+}
 
 module.exports = {
   createProduct,
   getProductById,
   updateProductById,
   deleteProductById,
-  productsList
+  productsList,
+  deleteAllProducts,
+  findProduct
 };
